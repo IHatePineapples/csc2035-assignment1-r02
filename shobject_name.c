@@ -25,7 +25,7 @@ char* shobject_name(char* name_buf, const char* label) {
     char* user = getenv("USER");
     if (!user) user = "anon";
 
-    if (!label || !label[0] || label == "") label = "none";
+    if (!label || !label[0]) label = "none";
 
     int i;
 

@@ -73,7 +73,6 @@ bool ipc_jobqueue_is_empty(ipc_jobqueue_t* ijq) {
     
     if (!ijq) return !ijq;
     jobqueue_t* jq = ijq -> addr;
- 
     return !jq || jq->head == jq->tail;
 
 }
@@ -87,9 +86,7 @@ bool ipc_jobqueue_is_full(ipc_jobqueue_t* ijq) {
     
     if (!ijq) return !ijq;
     jobqueue_t* jq = ijq -> addr;
-     
     if (!jq) return !jq; 
-
     return jq->head == ((jq->tail + 1) % jq->buf_size);
 }
 
@@ -102,7 +99,6 @@ job_t* ipc_jobqueue_peekhead(ipc_jobqueue_t* ijq, job_t* dst) {
 
     if (!ijq) return NULL;
     jobqueue_t* jq = ijq -> addr;
-     
     return jobqueue_is_empty(jq) ? NULL : job_copy(dst, &jq->jobs[jq->head]);
 }
     
@@ -113,12 +109,11 @@ job_t* ipc_jobqueue_peekhead(ipc_jobqueue_t* ijq, job_t* dst) {
  */
 job_t* ipc_jobqueue_peektail(ipc_jobqueue_t* ijq, job_t* dst) {
 
-    
     if (!ijq) return NULL;
     jobqueue_t* jq = ijq -> addr;
 
     return jobqueue_peektail(jq,dst);
-;
+
 }
 
 /* 
@@ -126,7 +121,5 @@ job_t* ipc_jobqueue_peektail(ipc_jobqueue_t* ijq, job_t* dst) {
  * Hint:
  * - look at how the ipc_jobqueue is allocated in ipc_jobqueue_new
  */
-void ipc_jobqueue_delete(ipc_jobqueue_t* ijq) {
-    free(ijq);
-    return;
-}
+void ipc_jobqueue_delete(ipc_jobqueue_t* ijq) {free(ijq);}
+
