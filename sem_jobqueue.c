@@ -64,8 +64,7 @@ static void sem_delete(sem_t* sem, const char* sem_label) {
  * freed or closed by sem_jobqueue_delete
  */
 sem_jobqueue_t* sem_jobqueue_new(proc_t* proc) {
-    sem_jobqueue_t* sjq = (sem_jobqueue_t*)
-                                    malloc(sizeof(sem_jobqueue_t));
+    sem_jobqueue_t* sjq = (sem_jobqueue_t*) malloc(sizeof(sem_jobqueue_t));
 
     if (!sjq)
         return NULL;
@@ -116,7 +115,10 @@ sem_jobqueue_t* sem_jobqueue_new(proc_t* proc) {
  * sem_jobqueue.h
  */
 size_t sem_jobqueue_capacity(sem_jobqueue_t* sjq) {
-    return 0;
+    if (!sjq) return 0;
+    ipc_jobqueue_t* ijq = sjq->ijq;
+
+    return ipc_jobqueue_capacity(ijq); 
 }
 
 /* 
@@ -124,7 +126,10 @@ size_t sem_jobqueue_capacity(sem_jobqueue_t* sjq) {
  * sem_jobqueue.h
  */
 job_t* sem_jobqueue_dequeue(sem_jobqueue_t* sjq, job_t* dst) {
-    return NULL;
+
+    if (!sjq) return NULL;
+    ipc_jobqueue_t* ijq = sjq->ijq;
+    return ipc_jobqueue_dequeue(ijq,dst); 
 }
 
 /* 
@@ -132,6 +137,9 @@ job_t* sem_jobqueue_dequeue(sem_jobqueue_t* sjq, job_t* dst) {
  * sem_jobqueue.h
  */
 void sem_jobqueue_enqueue(sem_jobqueue_t* sjq, job_t* job) {
+    if (!sjq) return;
+    ipc_jobqueue_t* ijq = sjq->ijq;
+    ipc_jobqueue_enqueue(ijq,job);
     return;
 }
 
@@ -140,7 +148,11 @@ void sem_jobqueue_enqueue(sem_jobqueue_t* sjq, job_t* job) {
  * sem_jobqueue.h
  */
 bool sem_jobqueue_is_empty(sem_jobqueue_t* sjq) {
-    return false;
+    
+    if (!sjq) return true;
+    ipc_jobqueue_t* ijq = sjq->ijq;
+
+    return ipc_jobqueue_is_empty(ijq);
 }
 
 /* 
@@ -148,7 +160,10 @@ bool sem_jobqueue_is_empty(sem_jobqueue_t* sjq) {
  * sem_jobqueue.h
  */
 bool sem_jobqueue_is_full(sem_jobqueue_t* sjq) {
-    return false;
+
+    if (!sjq) return true;
+    ipc_jobqueue_t* ijq = sjq->ijq;
+    return ipc_jobqueue_is_full(ijq);
 }
 
 /* 
@@ -156,7 +171,10 @@ bool sem_jobqueue_is_full(sem_jobqueue_t* sjq) {
  * sem_jobqueue.h
  */
 job_t* sem_jobqueue_peekhead(sem_jobqueue_t* sjq, job_t* dst) {
-    return NULL;
+    if (!sjq) return NULL;
+    ipc_jobqueue_t* ijq = sjq->ijq;
+
+    return ipc_jobqueue_peekhead(ijq,dst);
 }
 
 /* 
@@ -164,7 +182,9 @@ job_t* sem_jobqueue_peekhead(sem_jobqueue_t* sjq, job_t* dst) {
  * sem_jobqueue.h
  */
 job_t* sem_jobqueue_peektail(sem_jobqueue_t* sjq, job_t* dst) {
-    return NULL;
+    if (!sjq) return NULL;
+    ipc_jobqueue_t* ijq = sjq->ijq;
+    return ipc_jobqueue_peektail(ijq,dst);
 }
 
 /* 
@@ -174,5 +194,8 @@ job_t* sem_jobqueue_peektail(sem_jobqueue_t* sjq, job_t* dst) {
  * - look at what is allocated and/or opened in sem_jobqueue_new
  */
 void sem_jobqueue_delete(sem_jobqueue_t* sjq) {
+
+    if (sjq) ipc_jobqueue_delete(sjq->ijq);
+    free(sjq);
     return;
 }

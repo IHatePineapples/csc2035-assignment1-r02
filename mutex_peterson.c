@@ -16,7 +16,7 @@
  * - also see: mutex_peterson.h, mutex_lockvar.c and ipc.h
  */
 mutex_t* mutex_new(proc_t* proc) {
-    return NULL;
+    return ipc_new(proc, "mux_peters", sizeof(mutex_peterson_t));
 }
 
 /* 
@@ -49,5 +49,6 @@ void mutex_leave(mutex_t* mux) {
  * - deallocate what you allocate in mutex_new
  */
 void mutex_delete(mutex_t* mux) {
+    free(mux);
     return;
 }
