@@ -32,6 +32,18 @@ mutex_t* mutex_new(proc_t* proc) {
  * - also see: mutex_lockvar.c
  */
 void mutex_enter(mutex_t* mux) {
+   
+    if (!mux) return;
+    
+    mutex_peterson_t* mp = (mutex_peterson_t*) mux->addr;
+    
+    mp->turn = mux->proc->id;
+    mp->interested[mux->proc->id % 2] = 1;
+    mp->interested[1 - (mux->proc->id % 2)] = 0;
+        
+    while (mp->turn == mux->proc->id && mp -> interested[1 - mux->proc->id % 2] == 1);
+   
+    
     return;
 }
 
@@ -40,6 +52,12 @@ void mutex_enter(mutex_t* mux) {
  * Hints: see hints for mutex_enter
  */
 void mutex_leave(mutex_t* mux) {
+   
+    
+    if (!mux) return;
+
+    mutex_peterson_t* mp = (mutex_peterson_t*) mux->addr;
+    mp->interested[mux->proc->id % 2] = 0;
     return;
 }
 
