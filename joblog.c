@@ -61,7 +61,7 @@ int joblog_init(proc_t* proc) {
     }
 
     joblog_delete(proc);    // in case log exists for proc
-    
+   
     return r;
 }
 
@@ -86,6 +86,7 @@ char* joblog_read_entry(proc_t* proc, int entry_num, char* buf) {
         errno = init_errno;
         return NULL;
     }
+
     FILE* f = fopen(f_name, "r");
     free(f_name);
     if (!f){
@@ -110,7 +111,7 @@ char* joblog_read_entry(proc_t* proc, int entry_num, char* buf) {
         return buf;
     }
     else{
-        char * new_buf = calloc(JOBLOG_ENTRY_SIZE, 1 );
+        char *new_buf = calloc(JOBLOG_ENTRY_SIZE, 1 );
         if (!fgets(new_buf,JOBLOG_ENTRY_SIZE,f)){
             free(new_buf);
             fclose(f);
@@ -136,14 +137,12 @@ void joblog_write_entry(proc_t* proc, job_t* job) {
     if (!job) return;
 
     char* f_name = new_log_name(proc);
-
     if (!f_name){
         errno = init_errno;
         free(f_name);
         return;
     }
 
-    //"pid:%07d,id:%05d,label:%s\n"
     FILE* f = fopen(f_name, "a");
     free(f_name);
     if (!f) {
@@ -151,13 +150,8 @@ void joblog_write_entry(proc_t* proc, job_t* job) {
         return;
     }
     fprintf(f,JOBLOG_ENTRY_FMT,job->pid, job->id, job->label );
-    //printf(JOBLOG_ENTRY_FMT,job->pid, job->id, job->label );
-
     fclose(f);
-
-
     errno = init_errno;
-
 }
 
 /* 

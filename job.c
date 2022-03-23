@@ -29,7 +29,6 @@ job_t* job_copy(job_t* dst, job_t* src) {
         dst = job_new(src -> pid, src -> id, src ->label);
         return dst;
     }
-
     if (!job_is_equal(src, dst)) dst = job_set(dst, src->pid,src->id, src->label);
 
     return dst;
@@ -69,18 +68,18 @@ job_t* job_set(job_t* job, pid_t pid, unsigned int id, const char* label) {
 
     if (!job) return NULL;
 
-    job-> pid = pid;
-    job-> id = id;
+    job->pid = pid;
+    job->id = id;
     if (label) {
         strncpy(job->label, label, MAX_NAME_SIZE);
         for (size_t i = strnlen(label, MAX_NAME_SIZE ); i < MAX_NAME_SIZE; i++) job->label[i] = PAD_CHAR;
-        job-> label[MAX_NAME_SIZE-1] = '\0' ;
+        job->label[MAX_NAME_SIZE-1] = '\0';
     }
     else {
         for (int i = 0; i < MAX_NAME_SIZE; i++) job->label[i] = PAD_CHAR;
 
     }
-    job-> label[MAX_NAME_SIZE-1] = '\0' ;
+    job-> label[MAX_NAME_SIZE-1] = '\0';
     return job;
 }
 
@@ -93,11 +92,11 @@ void job_delete(job_t* job) {
 
     if (!job) return;
 
-    job-> pid = 0;
-    job-> id = 0;
+    job->pid = 0;
+    job->id = 0;
     for (int i = 0; i < MAX_NAME_SIZE; i++ ){
         job-> label[i] = '\0';
     }
-    job-> label[MAX_NAME_SIZE-1] = '\0' ;
-    free(job) ;
+    job->label[MAX_NAME_SIZE-1] = '\0';
+    free(job);
 }
