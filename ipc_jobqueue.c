@@ -3,7 +3,6 @@
  * 000000000
  */
 #include "ipc_jobqueue.h"
-#include <stdio.h>
 
 /* 
  * DO NOT EDIT the ipc_jobqueue_new function.
@@ -42,19 +41,12 @@ size_t ipc_jobqueue_capacity(ipc_jobqueue_t* ijq) {
  */
 job_t* ipc_jobqueue_dequeue(ipc_jobqueue_t* ijq, job_t* dst) {
 
-    //printf("\n\nENTERED FUNCTION\n");
     if (!ijq) return NULL;
 
-   
-    //printf("\n\nINSIDE FUNCTION :49\n");
-    
     dst = jobqueue_dequeue(ijq -> addr, dst); 
-    //printf("\n\nINSIDE FUNCTION :52\n");
     if (!dst) return NULL;
 
-    //printf("\n\nINSIDE FUNCTION :55\n");
     do_critical_work(ijq -> proc);
-    //printf("\n\nFINISHING FUNCTION :57\n");
     return dst;
 }
 
@@ -117,9 +109,7 @@ job_t* ipc_jobqueue_peekhead(ipc_jobqueue_t* ijq, job_t* dst) {
 job_t* ipc_jobqueue_peektail(ipc_jobqueue_t* ijq, job_t* dst) {
 
     if (!ijq) return NULL;
-    jobqueue_t* jq = ijq -> addr;
-
-    return jobqueue_peektail(jq,dst);
+    return jobqueue_peektail(ijq -> addr,dst);
 
 }
 
@@ -131,7 +121,6 @@ job_t* ipc_jobqueue_peektail(ipc_jobqueue_t* ijq, job_t* dst) {
 void ipc_jobqueue_delete(ipc_jobqueue_t* ijq) {
     
     if (!ijq) return;
-
     ipc_delete(ijq);
 }
 
